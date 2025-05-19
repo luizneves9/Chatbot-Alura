@@ -13,8 +13,8 @@ from projeto_chatbot2 import (
 
 # --- Layout da Aplicação Streamlit ---
 
-st.title("Chatbot Alura - IA")
-st.write("Chatbot com informações da empresa para fins de conhecimentos.")
+st.title("Chatbot - Sua fonte completa de informações sobre a Alura")
+st.write("Pergunte abaixo e tire suas dúvidas instantaneamente")
 
 # --- Inicialização e Carregamento de Recursos com Cache ---
 # Usamos as funções importadas, MAS as envolvemos com os decoradores de cache do Streamlit.

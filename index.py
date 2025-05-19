@@ -1,6 +1,7 @@
 # index.py
 
 import streamlit as st
+import os
 # Importa as funções do seu arquivo de lógica
 from projeto_chatbot2 import (
     load_api_key,

@@ -21,15 +21,40 @@ st.write("Chatbot com informações da empresa para fins de conhecimentos.")
 # aconteçam apenas uma vez, mesmo que o script index.py seja re-executado
 # em cada interação do usuário (que é como o Streamlit funciona).
 
-@st.cache_resource(show_spinner="Carregando API Key...")
-def get_cached_api_key():
-    """Carrega a API Key usando a função do projeto_chatbot2.py e aplica cache."""
-    try:
-        return load_api_key()
-    except Exception as e:
-        st.error(f"Erro de Inicialização (API Key): {e}")
-        st.stop() # Para a execução do Streamlit se a API Key falhar
-    return None # Não deve chegar aqui devido ao st.stop()
+@st.cache_resource(show_spinner="Carregando Configurações...")
+def load_config():
+    """
+    Tenta carregar a API Key de variáveis de ambiente (Secrets do Streamlit Cloud)
+    ou de um arquivo .env localmente.
+    """
+    # Primeiro, tenta ler a variável de ambiente diretamente.
+    # No Streamlit Cloud, esta variável será populada se você configurou os Secrets.
+    # Localmente, pode já estar definida no seu ambiente ou será None inicialmente.
+    api_key = os.environ.get('GOOGLE_API_KEY')
+
+    # Se a variável de ambiente NÃO estiver definida,
+    # tenta carregar do arquivo .env (útil para desenvolvimento local).
+    if not api_key:
+        env_path = ENV_FILE # Usa o caminho definido globalmente no index.py
+        if os.path.exists(env_path):
+            print(f"Tentando carregar .env localmente de {env_path}") # Opcional: para debug local
+            load_dotenv(env_path)
+            # Tenta ler a variável novamente após carregar o .env
+            api_key = os.environ.get('GOOGLE_API_KEY')
+        else:
+            # Este 'else' será executado no Streamlit Cloud onde .env não existe
+            # E também localmente se .env não existe E a variável não está no ambiente
+            print(f"Aviso: Arquivo .env não encontrado em {env_path}.") # Opcional: para debug
+
+    # Se após todas as tentativas a chave ainda não foi encontrada, é um erro crítico.
+    if not api_key:
+        st.error('ERRO: A chave GOOGLE_API_KEY não foi encontrada.')
+        st.error('Certifique-se de que GOOGLE_API_KEY está definida:')
+        st.error('- Nos Secrets do Streamlit Cloud (para deploy)')
+        st.error('- OU no arquivo .env (para desenvolvimento local)')
+        st.stop() # Para a execução do Streamlit
+
+    return api_key
 
 @st.cache_data(show_spinner="Carregando Base de Dados CSV...")
 def get_cached_documents():

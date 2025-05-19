@@ -91,7 +91,7 @@ def get_cached_chat_session(_api_key):
 # --- Carregar os Recursos para a Sessão ---
 # Estas chamadas disparam as funções cacheadas acima.
 # Elas serão executadas rapidamente após a primeira vez.
-api_key = get_cached_api_key() # Carrega a API Key
+api_key = load_config() # Carrega a API Key
 documents = get_cached_documents() # Carrega os dados do CSV
 retriever = get_cached_retriever(documents, api_key) # Inicializa o retriever (passa os dados e a key)
 chat_session = get_cached_chat_session(api_key) # Inicializa o chat Gemini (passa a key)
